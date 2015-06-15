@@ -52,7 +52,7 @@ func (a *LogstashAdapter) Stream(logstream chan *router.Message) {
 			log.Println("logstash:", err)
 			continue
 		}
-		js = append(js, "\n") // append a newline to the marshaled JSON
+		js = append(js, "\n"...) // append a newline to the marshaled JSON
 		_, err = a.conn.Write(js)
 		if err != nil {
 			log.Println("logstash:", err)
