@@ -3,10 +3,8 @@ package logstash
 import (
 	"encoding/json"
 	"errors"
-	"io/ioutil"
 	"log"
 	"net"
-	"net/http"
 	"os"
 	"strings"
 
@@ -77,16 +75,6 @@ func (a *LogstashAdapter) Stream(logstream chan *router.Message) {
 
 	options := UnmarshalOptions(getopt("OPTIONS", ""))
 
-	resp, err := http.Get("http://169.254.169.254/latest/meta-data/instance-id")
-	instance_id := ""
-	if err == nil {
-		value, err := ioutil.ReadAll(resp.Body)
-		if err == nil {
-			instance_id = string(value)
-		}
-		resp.Body.Close()
-	}
-
 	for m := range logstream {
 		container_options := UnmarshalOptions(GetLogspoutOptionsString(m.Container.Config.Env))
 
@@ -108,7 +96,6 @@ func (a *LogstashAdapter) Stream(logstream chan *router.Message) {
 			Image:      m.Container.Config.Image,
 			Hostname:   m.Container.Config.Hostname,
 			Args:       m.Container.Args,
-			InstanceId: instance_id,
 			Options:    container_options,
 		}
 		js, err := json.Marshal(msg)
@@ -133,5 +120,4 @@ type LogstashMessage struct {
 	Hostname   string            `json:"docker.hostname"`
 	Args       []string          `json:"docker.args,omitempty"`
 	Options    map[string]string `json:"options,omitempty"`
-	InstanceId string            `json:"instance-id,omitempty"`
 }
