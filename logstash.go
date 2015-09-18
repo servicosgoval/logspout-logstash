@@ -64,7 +64,6 @@ func (a *LogstashAdapter) Stream(logstream chan *router.Message) {
 		}
 
 		js, err := json.Marshal(msg)
-		log.Println(js)
 		if err != nil {
 			log.Println("logstash:", err)
 			continue
