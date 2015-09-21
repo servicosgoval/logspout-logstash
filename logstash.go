@@ -20,14 +20,6 @@ type LogstashAdapter struct {
 	route *router.Route
 }
 
-func getopt(name, dfault string) string {
-	value := os.Getenv(name)
-	if value == "" {
-		value = dfault
-	}
-	return value
-}
-
 // NewLogstashAdapter creates a LogstashAdapter with TCP as the default transport.
 func NewLogstashAdapter(route *router.Route) (router.LogAdapter, error) {
 	transport, found := router.AdapterTransports.Lookup(route.AdapterTransport("tcp"))
